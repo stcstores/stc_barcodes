@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Barcode Order History</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script type="text/javascript" src="http://tablesorter.com/__jquery.tablesorter.min.js"></script>
+    <style>
+        body, html {
+            width: 100%;
+        }
+
+        table {
+            margin: 0 auto;
+        }
+
+        td, th{
+            padding: 0.25em;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            text-align: center;
+        }
+
+        .id_row {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <table id="order_table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Date</th>
+                <th>Email</th>
+                <th>Barcode Count</th>
+                <th>Barcodes</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <script>
+        orders = {{ orders }}
+
+        $(document).ready(function() {
+            for (var i=0; i<orders.length; i++) {
+                $("#order_table tbody").append("<tr>");
+                var row = $("#order_table tbody tr:last");
+                var order_id = orders[i].order_id;
+                var barcodes = orders[i].barcodes;
+                var row_id = remove_spaces(order_id);
+                row.append("<td class='id_row'>" + order_id + "</td>");
+                row.append("<td class='name_row'>" + orders[i].name + "</td>");
+                row.append("<td class='date_row'>" + orders[i].date + "</td>");
+                row.append("<td class='email_row'>" + orders[i].email + "</td>");
+                row.append("<td class='count_row'>" + orders[i].barcodes.length + "</td>");
+                row.append("<td id='barcode_list_" + row_id + "'><button id='show_barcodes_" + row_id + "'>Show Barcodes</td>");
+                $('#show_barcodes_' + row_id).click(show_barcodes_generator(row_id, barcodes));
+                var barcode_row = $('.barcode_list_' + row_id);
+                $("#order_table tr:even").css("background-color", "#F4F4F8");
+                  $("#order_table tr:odd").css("background-color", "#EFF1F1");
+            }
+            $("#order_table").tablesorter();
+        });
+
+        function show_barcodes_generator(order_id, barcodes) {
+            return function(event) {
+                var barcode_list_html = "<table>";
+                barcode_list_html += "<tr><button id='hide_" + order_id + "'>Hide Barcodes";
+                for (var i=0; i<barcodes.length; i++) {
+                    barcode_list_html += "<tr><td>" + barcodes[i] + "</td></tr>";
+                }
+                $('#barcode_list_' + order_id).html(barcode_list_html);
+                $('#hide_' + order_id).click(hide_barcodes_generator(order_id, barcodes));
+            }
+        }
+
+        function hide_barcodes_generator(order_id, barcodes) {
+            return function(event) {
+                $('#barcode_list_' + order_id).html("<button id='show_barcodes_" + order_id + "'>Show Barcodes</td>");
+                $('#show_barcodes_' + order_id).click(show_barcodes_generator(order_id, barcodes));
+            }
+        }
+
+        function remove_spaces(text) {
+            return text.split(" ").join("_");
+        }
+    </script>
+</body>
+</html>

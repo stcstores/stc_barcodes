@@ -1,0 +1,94 @@
+<html moznomarginboxes mozdisallowselectionprint>
+    <style>
+        body {
+            text-align: center;
+            width: 100%;
+        }
+
+        p {
+            margin: 0;
+        }
+
+        .reference {
+            font-weight: bold;
+        }
+
+        .barcode {
+            font-size: 0.75em;
+            margin: 0.025em;
+        }
+
+        .barcodes {
+            margin: 2em;
+            text-align: left;
+            font-family: monospace;
+            width: 100%;
+        }
+
+        .content {
+            display: block;
+            text-align: center;
+        }
+
+        .address {
+            display: inline-block;
+            text-align: left;
+            width: 25%;
+        }
+
+        .order_details {
+            display: inline-block;
+            width: 25%;
+        }
+
+        .contact {
+            display: inline-block;
+            width: 25%;
+            text-align: left;
+            padding-left: 2em;
+        }
+
+        @page{
+             size: A4;
+             margin: 0;
+        }
+
+        @media print {
+            html, body {
+                width;
+                210mm;
+                297mm;
+            }
+        }
+    </style>
+    <div class="content">
+        <div class="header">
+            <div class="address">
+                <p>STC Stores</p>
+                <p>26 Harbour Road</p>
+                <p>Seaton</p>
+                <p>Devon</p>
+                <p>EX12 2NA</p>
+            </div>
+            <div class="order_details">
+                <p class="reference">Order ID: {{reference}}</p>
+                <p>Order Date: {{date}}</p>
+                <p>Barcodes In This Order: {{barcode_count}}</p>
+            </div>
+            <div class="contact">
+                <p>Phone: 01297 21874 / 21870</p>
+                <p>Int Phone: 0441297 21874</p>
+                <p>eMail: stcstores@yahoo.com</p>
+            </div>
+        </div>
+        <table class="barcodes">
+            {% for row in barcode_rows %}
+            <tr>
+                {% for barcode in row %}
+                <td class="barcode">{{barcode[0]}}. {{barcode[1]}}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</html>
